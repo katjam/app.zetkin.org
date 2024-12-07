@@ -1,4 +1,4 @@
-import { Close } from '@mui/icons-material';
+import { Close, PersonAdd } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 import { useRouter } from 'next/router';
 import {
@@ -17,9 +17,10 @@ import {
 } from '@mui/material';
 import { FC, HTMLAttributes, useEffect, useRef, useState } from 'react';
 
-import { useMessages } from 'core/i18n';
+import { Msg, useMessages } from 'core/i18n';
 import { usePersonSelect } from './ZUIPersonSelect';
 import { ZetkinPerson } from 'utils/types/zetkin';
+import ZUICreatePerson from 'zui/ZUICreatePerson';
 import ZUIPersonAvatar from 'zui/ZUIPersonAvatar';
 import messageIds from './l10n/messageIds';
 
@@ -44,6 +45,7 @@ const ZUIPersonGridEditCell: FC<{
   const styles = useStyles({ isRestrictedMode });
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [searching, setSearching] = useState(false);
+  const [createPersonOpen, setCreatePersonOpen] = useState(false);
 
   const orgId = parseInt(query.orgId as string);
 
@@ -304,6 +306,22 @@ const ZUIPersonGridEditCell: FC<{
                         })}
                       </List>
                     )}
+                    {autoComplete.inputValue.length >= 3 &&
+                      !personSelect.autoCompleteProps.isLoading &&
+                      searchResults.length === 0 && (
+                        <Button
+                          color="primary"
+                          onClick={() => setCreatePersonOpen(true)}
+                          startIcon={<PersonAdd />}
+                          sx={{
+                            justifyContent: 'flex-start',
+                            m: 2,
+                          }}
+                          variant="outlined"
+                        >
+                          <Msg id={messageIds.createPerson.createBtn} />
+                        </Button>
+                      )}
                   </List>
                 </Box>
               </Box>
@@ -311,6 +329,14 @@ const ZUIPersonGridEditCell: FC<{
           </Paper>
         </Popper>
       ) : null}
+
+      <ZUICreatePerson
+        onClose={() => setCreatePersonOpen(false)}
+        onSubmit={(ev, person) => onUpdate(person)}
+        open={createPersonOpen}
+        submitLabel={messages.createPerson.submitLabel.add()}
+        title={messages.createPerson.title.default()}
+      />
     </Box>
   );
 };
