@@ -207,14 +207,14 @@ const SurveySubmissionsList = ({
     };
 
     return (
-        <ZUIPersonGridEditCell
-          cell={row.respondent}
-          onCreate={onCreate}
-          onUpdate={updateCellValue}
-          removePersonLabel={messages.submissions.unlink()}
-          suggestedPeople={row.respondent === null ? [] : suggestedPeople} //filter anonymous
-          suggestedPeopleLabel={messages.submissions.suggestedPeople()}
-        />
+      <ZUIPersonGridEditCell
+        cell={row.respondent}
+        onCreate={onCreate}
+        onUpdate={updateCellValue}
+        removePersonLabel={messages.submissions.unlink()}
+        suggestedPeople={row.respondent === null ? [] : suggestedPeople} //filter anonymous
+        suggestedPeopleLabel={messages.submissions.suggestedPeople()}
+      />
     );
   };
 
@@ -256,7 +256,7 @@ const SurveySubmissionsList = ({
       />
       <ZUICreatePerson
         onClose={() => setCreatePersonOpen(false)}
-        onSubmit={()=>{}}
+        onSubmit={() => {}}
         open={createPersonOpen}
         submitLabel="Submit cCc"
         title="create title cCc"
