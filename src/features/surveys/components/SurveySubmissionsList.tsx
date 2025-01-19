@@ -10,6 +10,7 @@ import {
 import { FC, useEffect, useMemo, useState } from 'react';
 
 import messageIds from '../l10n/messageIds';
+import SurveyLinkDialog from './SurveyLinkDialog';
 import SurveySubmissionPane from '../panes/SurveySubmissionPane';
 import { useNumericRouteParams } from 'core/hooks';
 import { usePanes } from 'utils/panes';
@@ -32,6 +33,9 @@ const SurveySubmissionsList = ({
   const { orgId } = useRouter().query;
   const { openPane } = usePanes();
   const [createPersonOpen, setCreatePersonOpen] = useState(false);
+
+  const [dialogPerson, setDialogPerson] = useState<ZetkinPerson | null>(null);
+  const [dialogEmail, setDialogEmail] = useState('');
 
   const sortedSubmissions = useMemo(() => {
     const sorted = [...submissions].sort((subOne, subTwo) => {
@@ -188,10 +192,6 @@ const SurveySubmissionsList = ({
 
     const { results: suggestedPeople, setQuery } = usePersonSearch(orgId);
 
-    const onCreate = () => {
-      setCreatePersonOpen(true);
-    };
-
     useEffect(() => {
       if (emailOrName.length > 2) {
         setQuery(emailOrName);
@@ -204,12 +204,23 @@ const SurveySubmissionsList = ({
         id: row.id,
       });
       setRespondentId(person?.id || null);
+
+      const respondentEmail = row.respondent?.email;
+      if (person) {
+        const personHasNoEmail = person.email == null || person.email == '';
+        if (personHasNoEmail && respondentEmail != undefined) {
+          setDialogEmail(respondentEmail);
+          setDialogPerson(person);
+        }
+      }
     };
 
     return (
       <ZUIPersonGridEditCell
         cell={row.respondent}
-        onCreate={onCreate}
+        onCreate={() => {
+          setCreatePersonOpen(true);
+        }}
         onUpdate={updateCellValue}
         removePersonLabel={messages.submissions.unlink()}
         suggestedPeople={row.respondent === null ? [] : suggestedPeople} //filter anonymous
@@ -256,11 +267,21 @@ const SurveySubmissionsList = ({
       />
       <ZUICreatePerson
         onClose={() => setCreatePersonOpen(false)}
-        onSubmit={() => {}}
+        onSubmit={() => {
+            // setRespondentId(person?.id || null);
+        }}
         open={createPersonOpen}
         submitLabel="Submit cCc"
         title="create title cCc"
       />
+      {dialogPerson && (
+        <SurveyLinkDialog
+          email={dialogEmail}
+          onClose={() => setDialogPerson(null)}
+          open={!!dialogPerson}
+          person={dialogPerson}
+        />
+      )}
     </Box>
   );
 };

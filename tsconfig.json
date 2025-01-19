@@ -43,11 +43,14 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    ".storybook/preview.tsx",
     ".next/types/**/*.ts"
   ],
   "exclude": [
     ".next",
     "node_modules",
-    "storybook-static"
+    "storybook-static",
+    "public/storybook",
+    "public/docs"
   ]
 }
