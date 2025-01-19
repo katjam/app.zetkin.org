@@ -7,7 +7,7 @@ import {
   GridRenderCellParams,
   useGridApiContext,
 } from '@mui/x-data-grid-pro';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 import messageIds from '../l10n/messageIds';
 import SurveySubmissionPane from '../panes/SurveySubmissionPane';
@@ -15,6 +15,7 @@ import { useNumericRouteParams } from 'core/hooks';
 import { usePanes } from 'utils/panes';
 import usePersonSearch from 'features/profile/hooks/usePersonSearch';
 import useSurveySubmission from '../hooks/useSurveySubmission';
+import ZUICreatePerson from 'zui/ZUICreatePerson';
 import ZUIPersonGridCell from 'zui/ZUIPersonGridCell';
 import ZUIPersonGridEditCell from 'zui/ZUIPersonGridEditCell';
 import ZUIPersonHoverCard from 'zui/ZUIPersonHoverCard';
@@ -30,6 +31,7 @@ const SurveySubmissionsList = ({
   const messages = useMessages(messageIds);
   const { orgId } = useRouter().query;
   const { openPane } = usePanes();
+
 
   const sortedSubmissions = useMemo(() => {
     const sorted = [...submissions].sort((subOne, subTwo) => {
@@ -186,6 +188,12 @@ const SurveySubmissionsList = ({
 
     const { results: suggestedPeople, setQuery } = usePersonSearch(orgId);
 
+    const [createPersonOpen, setCreatePersonOpen] = useState(false);
+
+    const onCreate = () => {
+      setCreatePersonOpen(true);
+    }
+
     useEffect(() => {
       if (emailOrName.length > 2) {
         setQuery(emailOrName);
@@ -201,13 +209,23 @@ const SurveySubmissionsList = ({
     };
 
     return (
+        <>
       <ZUIPersonGridEditCell
         cell={row.respondent}
+        onCreate={onCreate}
         onUpdate={updateCellValue}
         removePersonLabel={messages.submissions.unlink()}
         suggestedPeople={row.respondent === null ? [] : suggestedPeople} //filter anonymous
         suggestedPeopleLabel={messages.submissions.suggestedPeople()}
       />
+      <ZUICreatePerson
+        onClose={() => setCreatePersonOpen(false)}
+        onSubmit={(ev, person) => updateCellValue(person)}
+        open={createPersonOpen}
+        submitLabel="Submit cCc"
+        title="create title cCc"
+      />
+      </>
     );
   };
 

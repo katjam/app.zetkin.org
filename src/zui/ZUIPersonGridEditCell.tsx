@@ -20,12 +20,12 @@ import { FC, HTMLAttributes, useEffect, useRef, useState } from 'react';
 import { Msg, useMessages } from 'core/i18n';
 import { usePersonSelect } from './ZUIPersonSelect';
 import { ZetkinPerson } from 'utils/types/zetkin';
-import ZUICreatePerson from 'zui/ZUICreatePerson';
 import ZUIPersonAvatar from 'zui/ZUIPersonAvatar';
 import messageIds from './l10n/messageIds';
 
 const ZUIPersonGridEditCell: FC<{
   cell?: (Partial<Omit<ZetkinPerson, 'id'>> & { id: number | null }) | null;
+  onCreate?: () => void;
   onUpdate: (person: ZetkinPerson | null) => void;
   removePersonLabel: string;
   restrictedMode?: boolean;
@@ -33,6 +33,7 @@ const ZUIPersonGridEditCell: FC<{
   suggestedPeopleLabel: string;
 }> = ({
   cell,
+  onCreate,
   onUpdate,
   removePersonLabel,
   restrictedMode: isRestrictedMode = false,
@@ -45,7 +46,6 @@ const ZUIPersonGridEditCell: FC<{
   const styles = useStyles({ isRestrictedMode });
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [searching, setSearching] = useState(false);
-  const [createPersonOpen, setCreatePersonOpen] = useState(false);
 
   const orgId = parseInt(query.orgId as string);
 
@@ -311,7 +311,7 @@ const ZUIPersonGridEditCell: FC<{
                       searchResults.length === 0 && (
                         <Button
                           color="primary"
-                          onClick={() => setCreatePersonOpen(true)}
+                          onClick={() => onCreate}
                           startIcon={<PersonAdd />}
                           sx={{
                             justifyContent: 'flex-start',
@@ -329,14 +329,6 @@ const ZUIPersonGridEditCell: FC<{
           </Paper>
         </Popper>
       ) : null}
-
-      <ZUICreatePerson
-        onClose={() => setCreatePersonOpen(false)}
-        onSubmit={(ev, person) => onUpdate(person)}
-        open={createPersonOpen}
-        submitLabel={messages.createPerson.submitLabel.add()}
-        title={messages.createPerson.title.default()}
-      />
     </Box>
   );
 };
