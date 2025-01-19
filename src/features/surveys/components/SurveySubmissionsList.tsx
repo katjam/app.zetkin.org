@@ -32,8 +32,8 @@ const SurveySubmissionsList = ({
   const messages = useMessages(messageIds);
   const { orgId } = useRouter().query;
   const { openPane } = usePanes();
-  const [createPersonOpen, setCreatePersonOpen] = useState(false);
 
+  const [createPersonOpen, setCreatePersonOpen] = useState(false);
   const [dialogPerson, setDialogPerson] = useState<ZetkinPerson | null>(null);
   const [dialogEmail, setDialogEmail] = useState('');
 
@@ -268,11 +268,12 @@ const SurveySubmissionsList = ({
       <ZUICreatePerson
         onClose={() => setCreatePersonOpen(false)}
         onSubmit={() => {
-            // setRespondentId(person?.id || null);
+          // ToDo get row and new ID 
+          // setRespondentId(person?.id || null);
         }}
         open={createPersonOpen}
-        submitLabel="Submit cCc"
-        title="create title cCc"
+        submitLabel={messages.submissions.createPersonSubmit()}
+        title={messages.submissions.createPersonTitle()}
       />
       {dialogPerson && (
         <SurveyLinkDialog
