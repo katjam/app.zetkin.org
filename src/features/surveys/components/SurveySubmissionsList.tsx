@@ -31,7 +31,7 @@ const SurveySubmissionsList = ({
   const messages = useMessages(messageIds);
   const { orgId } = useRouter().query;
   const { openPane } = usePanes();
-
+  const [createPersonOpen, setCreatePersonOpen] = useState(false);
 
   const sortedSubmissions = useMemo(() => {
     const sorted = [...submissions].sort((subOne, subTwo) => {
@@ -188,11 +188,9 @@ const SurveySubmissionsList = ({
 
     const { results: suggestedPeople, setQuery } = usePersonSearch(orgId);
 
-    const [createPersonOpen, setCreatePersonOpen] = useState(false);
-
     const onCreate = () => {
       setCreatePersonOpen(true);
-    }
+    };
 
     useEffect(() => {
       if (emailOrName.length > 2) {
@@ -209,23 +207,14 @@ const SurveySubmissionsList = ({
     };
 
     return (
-        <>
-      <ZUIPersonGridEditCell
-        cell={row.respondent}
-        onCreate={onCreate}
-        onUpdate={updateCellValue}
-        removePersonLabel={messages.submissions.unlink()}
-        suggestedPeople={row.respondent === null ? [] : suggestedPeople} //filter anonymous
-        suggestedPeopleLabel={messages.submissions.suggestedPeople()}
-      />
-      <ZUICreatePerson
-        onClose={() => setCreatePersonOpen(false)}
-        onSubmit={(ev, person) => updateCellValue(person)}
-        open={createPersonOpen}
-        submitLabel="Submit cCc"
-        title="create title cCc"
-      />
-      </>
+        <ZUIPersonGridEditCell
+          cell={row.respondent}
+          onCreate={onCreate}
+          onUpdate={updateCellValue}
+          removePersonLabel={messages.submissions.unlink()}
+          suggestedPeople={row.respondent === null ? [] : suggestedPeople} //filter anonymous
+          suggestedPeopleLabel={messages.submissions.suggestedPeople()}
+        />
     );
   };
 
@@ -264,6 +253,13 @@ const SurveySubmissionsList = ({
         style={{
           border: 'none',
         }}
+      />
+      <ZUICreatePerson
+        onClose={() => setCreatePersonOpen(false)}
+        onSubmit={()=>{}}
+        open={createPersonOpen}
+        submitLabel="Submit cCc"
+        title="create title cCc"
       />
     </Box>
   );
